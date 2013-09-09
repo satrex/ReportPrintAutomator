@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Automation;
+using NLog;
+using System.Diagnostics;
 
 namespace AutomationClient
 {
@@ -10,6 +12,11 @@ namespace AutomationClient
     {
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException; 
+            var listener = new NLogTraceListener();
+            listener.TraceOutputOptions = TraceOptions.Callstack | TraceOptions.DateTime;
+            Trace.Listeners.Add(listener);
+
             try
             {
                 if (args.Length == 0)
@@ -46,6 +53,13 @@ namespace AutomationClient
                 Console.WriteLine(exp.ToString());
 
             }
+        }
+
+        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+        {
+            var logger = NLog.LogManager.GetLogger("UpperLevel");
+            logger.FatalException("Application closed due to exception.", unhandledExceptionEventArgs.ExceptionObject as Exception);
+            NLog.LogManager.Flush();
         }
 
         private static void OutputBestWorst()
@@ -128,6 +142,9 @@ namespace AutomationClient
             DateTime lastWeekMonday = DateTimeExpander.LastWeekMonday;
             DateTime lastSunday = DateTimeExpander.LastSunday;
             Automation.DetailData dd = new Automation.DetailData();
+            dd.StartDate = lastWeekMonday;
+            dd.EndDate = lastSunday;
+
             List<Action> smallActions = new List<Action>()
             {
                 // 店舗別に出力
@@ -142,6 +159,8 @@ namespace AutomationClient
             DateTime lastMonday = DateTimeExpander.LastWeekMonday.AddDays(7);
             DateTime nextSunday = DateTimeExpander.LastSunday.AddDays(7);
             Automation.ItemMap im = new ItemMap();
+            im.StartDate = lastMonday;
+            im.EndDate = nextSunday;
             List<Action> smallActions = new List<Action>()
             {
                 // 中分類別に出力

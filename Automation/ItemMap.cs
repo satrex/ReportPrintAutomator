@@ -14,55 +14,55 @@ namespace Automation
 
         public void Output(string fileSuffix)
         {
-            this.Open();
-            this.Query();
-            this.PrintPreview();
-            this.SaveFile(fileSuffix);
-            this.PrintOut();
-            this.ClosePrintPreview();
-            this.Close();
-        }
-
-        public override void Open()
-        {
             try
             {
-                Window.BreakKey = KBtn.ESCAPE;
-                DisplayMenuWindow();
-
-
-                var processes = Process.GetProcessesByName("HBH0003V");
-                if (processes.Count() == 0)
-                {
-                    Process P01 = Process.GetProcessesByName("MNU0003S")[0];
-                    Window menuWindow = Window.GetTopChild(P01.Id, "WindowsForms10.Window.8.app4", "服飾販売管理 本部システム");
-
-                    menuWindow.MouseMove(PointMode.LeftTop, 27, -10, 827);
-                    menuWindow.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 102, -5); Thread.Sleep(171);
-                    menuWindow.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 102, -5); Thread.Sleep(156);
-
-                    Window menu = Window.GetTopChild(P01.Id, "#32768", "");
-
-                    menu.MouseMove(PointMode.LeftTop, 71, 70, 936);
-                    menu.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 71, 70); Thread.Sleep(173);
-                    menu.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 71, 70); Thread.Sleep(173);
-                }
-
-                theProcess = Process.GetProcessesByName("HBH0003V")[0];
-
-                theWindow = Window.GetTopChild(theProcess.Id, "WindowsForms10.Window.8.app.0.378734a", "アイテム投入MAP");
-                while (theWindow == null)
-                {
-                    Thread.Sleep(1000);
-                    theWindow = Window.GetTopChild(theProcess.Id, "WindowsForms10.Window.8.app.0.378734a", "アイテム投入MAP");
-                }
-
-                this.windows.Add(theWindow);
+                this.Open();
+                this.Query();
+                this.PrintPreview();
+                this.SaveFile(fileSuffix);
+                this.PrintOut();
+                this.ClosePrintPreview();
+                this.Close();
             }
             catch (Exception ex)
             {
                 Trace.WriteLine("[Source]\n" + ex.Source + "\n\n[Message]\n" + ex.Message + "\n\n[StackTrace]\n" + ex.StackTrace);
             }
+        }
+
+        public override void Open()
+        {
+            Window.BreakKey = KBtn.ESCAPE;
+            DisplayMenuWindow();
+
+
+            var processes = Process.GetProcessesByName("HBH0003V");
+            if (processes.Count() == 0)
+            {
+                Process P01 = Process.GetProcessesByName("MNU0003S")[0];
+                Window menuWindow = Window.GetTopChild(P01.Id, "WindowsForms10.Window.8.app4", "服飾販売管理 本部システム");
+
+                menuWindow.MouseMove(PointMode.LeftTop, 27, -10, 827);
+                menuWindow.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 102, -5); Thread.Sleep(171);
+                menuWindow.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 102, -5); Thread.Sleep(156);
+
+                Window menu = Window.GetTopChild(P01.Id, "#32768", "");
+
+                menu.MouseMove(PointMode.LeftTop, 71, 70, 936);
+                menu.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 71, 70); Thread.Sleep(173);
+                menu.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 71, 70); Thread.Sleep(173);
+            }
+
+            theProcess = Process.GetProcessesByName("HBH0003V")[0];
+
+            theWindow = Window.GetTopChild(theProcess.Id, "WindowsForms10.Window.8.app.0.378734a", "アイテム投入MAP");
+            while (theWindow == null)
+            {
+                Thread.Sleep(1000);
+                theWindow = Window.GetTopChild(theProcess.Id, "WindowsForms10.Window.8.app.0.378734a", "アイテム投入MAP");
+            }
+
+            this.windows.Add(theWindow);
         }
 
         public void SetCriteriaDate(DateTime startDate, DateTime endDate)
@@ -92,24 +92,17 @@ namespace Automation
 
         protected override void Query()
         {
-             try
-            {
-                Window.BreakKey = KBtn.ESCAPE;
+            Window.BreakKey = KBtn.ESCAPE;
 
-                this.SetCriteriaDate(this.StartDate, this.EndDate);
-                foreach (Action setting in this.CriteriaSettings)
-                {
-                    setting.Invoke();
-                }
-                Window searchButton = theWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "検索");
-                searchButton.MouseMove(PointMode.LeftTop, 44, 15, 250); Thread.Sleep(151);
-                searchButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 44, 15);
-                WaitForActive();
-            }
-            catch (Exception ex)
+            this.SetCriteriaDate(this.StartDate, this.EndDate);
+            foreach (Action setting in this.CriteriaSettings)
             {
-                Trace.WriteLine("[Source]\n" + ex.Source + "\n\n[Message]\n" + ex.Message + "\n\n[StackTrace]\n" + ex.StackTrace);
+                setting.Invoke();
             }
+            Window searchButton = theWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "検索");
+            searchButton.MouseMove(PointMode.LeftTop, 44, 15, 250); Thread.Sleep(151);
+            searchButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 44, 15);
+            WaitForActive();
         }
 
         /// <summary>
@@ -127,54 +120,51 @@ namespace Automation
 
         public void SaveFile(string fileName)
         {
-            try
+            this.WaitForActive();
+            Window.BreakKey = KBtn.ESCAPE;
+            Window previewWindow = null;
+            int i = 0;
+            while (previewWindow == null)
             {
-                this.WaitForActive();
-                Window.BreakKey = KBtn.ESCAPE;
-                Window previewWindow = null;
-                while (previewWindow == null)
-                {
-                    previewWindow = Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入計画MAP 印刷プレビュー画面");
-                    Thread.Sleep(500);
-                }
-
-                Window pdfButton = null;
-                while (pdfButton == null)
-                {
-                    pdfButton = previewWindow.
-                     GetChild("WindowsForms10.BUTTON.app.0.378734a", "PDF出力");
-                    Thread.Sleep(500);
-                }
-                pdfButton.WaitForActive(5000);
-                pdfButton.MouseMove(PointMode.LeftTop, 41, 16, 51);
-                pdfButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 41, 16); Thread.Sleep(347);
-
-                Window saveDialog = Window.GetTopChild("HBH0003V", "#32770", "保存先を指定してください");
-                Window saveButton = saveDialog.GetChild("Button", "保存(&S)");
-
-
-                Window fileNameText = saveDialog.GetChild("DUIViewWndClassName", "").GetChild("DirectUIHWND", "").
-                            GetChild("FloatNotifySink", "", 0).GetChild("ComboBox", "").GetChild("Edit", "");
-
-                //fileNameText.MouseMove(PointMode.LeftTop, 223, 3, 407);
-                //fileNameText.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 223, 3);
-
-                Thread.Sleep(125);
-                fileNameText.KeyE(KType.Click, KBtn.RIGHT); Thread.Sleep(338);
-                fileNameText.KeyE(KType.Click, KBtn.LEFT, KBtn.LEFT, KBtn.LEFT, KBtn.LEFT); Thread.Sleep(338);
-                fileNameText.KeyE(KType.Click, KBtn.BACK, KBtn.BACK, KBtn.BACK, KBtn.BACK); Thread.Sleep(87);
-                fileNameText.KeyE(KType.Click, KBtn.BACK, KBtn.BACK); Thread.Sleep(197);
-                fileNameText.InputText(fileName);
-
-                saveButton.WaitForActive(5000);
-                saveButton.MouseMove(PointMode.LeftTop, 31, 11, 146);
-                saveButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 31, 11);
-                AnswerDialogOK();
+                previewWindow = Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入計画MAP 印刷プレビュー画面");
+                Thread.Sleep(500);
+                i++;
+                if (10 < i)
+                    throw new ApplicationException("プレビュー画面が表示されてません。印刷ボタンを押しそこなった可能性があります。");
             }
-            catch (Exception ex)
+
+            Window pdfButton = null;
+            while (pdfButton == null)
             {
-                Trace.WriteLine("[Source]\n" + ex.Source + "\n\n[Message]\n" + ex.Message + "\n\n[StackTrace]\n" + ex.StackTrace);
+                pdfButton = previewWindow.
+                 GetChild("WindowsForms10.BUTTON.app.0.378734a", "PDF出力");
+                Thread.Sleep(500);
             }
+            pdfButton.WaitForActive(5000);
+            pdfButton.MouseMove(PointMode.LeftTop, 41, 16, 51);
+            pdfButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 41, 16); Thread.Sleep(347);
+
+            Window saveDialog = Window.GetTopChild("HBH0003V", "#32770", "保存先を指定してください");
+            Window saveButton = saveDialog.GetChild("Button", "保存(&S)");
+
+
+            Window fileNameText = saveDialog.GetChild("DUIViewWndClassName", "").GetChild("DirectUIHWND", "").
+                        GetChild("FloatNotifySink", "", 0).GetChild("ComboBox", "").GetChild("Edit", "");
+
+            //fileNameText.MouseMove(PointMode.LeftTop, 223, 3, 407);
+            //fileNameText.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 223, 3);
+
+            Thread.Sleep(125);
+            fileNameText.KeyE(KType.Click, KBtn.RIGHT); Thread.Sleep(338);
+            fileNameText.KeyE(KType.Click, KBtn.LEFT, KBtn.LEFT, KBtn.LEFT, KBtn.LEFT); Thread.Sleep(338);
+            fileNameText.KeyE(KType.Click, KBtn.BACK, KBtn.BACK, KBtn.BACK, KBtn.BACK); Thread.Sleep(87);
+            fileNameText.KeyE(KType.Click, KBtn.BACK, KBtn.BACK); Thread.Sleep(197);
+            fileNameText.InputText(fileName);
+
+            saveButton.WaitForActive(5000);
+            saveButton.MouseMove(PointMode.LeftTop, 31, 11, 146);
+            saveButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 31, 11);
+            AnswerDialogOK();
         }
 
         /// <summary>
@@ -182,21 +172,14 @@ namespace Automation
         /// </summary>
         public void PrintOut()
         {
-            try
-            {
-                Window previewWindow =Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入計画MAP 印刷プレビュー画面");
-                Window printButton = previewWindow.GetChild("WindowsForms10.Window.8.app.0.378734a", "").GetChild("WindowsForms10.Window.8.app.0.378734a", "", 2);
+            Window previewWindow = Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入計画MAP 印刷プレビュー画面");
+            Window printButton = previewWindow.GetChild("WindowsForms10.Window.8.app.0.378734a", "").GetChild("WindowsForms10.Window.8.app.0.378734a", "", 2);
 
-                printButton.WaitForActive(5000);
-                printButton.MouseMove(PointMode.LeftTop, 40, 18, 104);
-                printButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 40, 18); Thread.Sleep(100);
+            printButton.WaitForActive(5000);
+            printButton.MouseMove(PointMode.LeftTop, 40, 18, 104);
+            printButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 40, 18); Thread.Sleep(100);
 
-                this.StartPrint();
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine("[Source]\n" + ex.Source + "\n\n[Message]\n" + ex.Message + "\n\n[StackTrace]\n" + ex.StackTrace);
-            }
+            this.StartPrint();
         }
 
         /// <summary>
@@ -204,32 +187,25 @@ namespace Automation
         /// </summary>
         public void ClosePrintPreview()
         {
-            try
+            Process P01 = theProcess;
+            Window printPreviewWindow = Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入計画MAP 印刷プレビュー画面");
+            while (printPreviewWindow == null)
             {
-                Process P01 = theProcess;
-                Window printPreviewWindow = Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入計画MAP 印刷プレビュー画面");
-                while (printPreviewWindow == null)
-                {
-                    printPreviewWindow = Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入計画MAP 印刷プレビュー画面");
-                    Thread.Sleep(500);
-                }
-
-                Window closeButton = printPreviewWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "閉じる");
-
-                closeButton.MouseMove(PointMode.LeftTop, 32, 18, 307);
-                closeButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 32, 18);
-
-                Window listWindow =  Window.GetTopChild(P01.Id, "WindowsForms10.Window.8.app.0.378734a", "アイテム投入MAP", 0);
-                Window backButton = listWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "戻る");
-
-                backButton.MouseMove(PointMode.LeftTop, 56, 19, 1358);
-                backButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 56, 19);
-
+                printPreviewWindow = Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入計画MAP 印刷プレビュー画面");
+                Thread.Sleep(500);
             }
-            catch (Exception ex)
-            {
-                Trace.WriteLine("[Source]\n" + ex.Source + "\n\n[Message]\n" + ex.Message + "\n\n[StackTrace]\n" + ex.StackTrace);
-            }
+
+            Window closeButton = printPreviewWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "閉じる");
+
+            closeButton.MouseMove(PointMode.LeftTop, 32, 18, 307);
+            closeButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 32, 18);
+
+            Window listWindow = Window.GetTopChild(P01.Id, "WindowsForms10.Window.8.app.0.378734a", "アイテム投入MAP", 0);
+            Window backButton = listWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "戻る");
+
+            backButton.MouseMove(PointMode.LeftTop, 56, 19, 1358);
+            backButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 56, 19);
+
         }
 
 
@@ -239,78 +215,73 @@ namespace Automation
         /// <param name="saveFileName">保存するファイルの末尾につけるサフィックスを指定します。</param>
         public void PrintPreview()
         {
-            try
+            Process P01 = theProcess;
+
+            Trace.WriteLine("マップ画面を操作するよ");
+            this.WaitForActive();
+            //Window printPreviewButton = Window.GetTopChild(P01.Id, "WindowsForms10.Window.8.app.0.378734a", "売上ベストワースト分析").GetChild("WindowsForms10.BUTTON.app.0.378734a", "印刷");
+            Window mapWindow = Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入MAP", 0);
+            while (!mapWindow.IsExists() || !mapWindow.IsEnabled())
             {
-                Process P01 = theProcess;
-
-                this.WaitForActive();
-                //Window printPreviewButton = Window.GetTopChild(P01.Id, "WindowsForms10.Window.8.app.0.378734a", "売上ベストワースト分析").GetChild("WindowsForms10.BUTTON.app.0.378734a", "印刷");
-                Window printPreviewWindow = Window.GetTopChild("HBH0003V", "WindowsForms10.Window.8.app.0.378734a", "アイテム投入MAP", 0);
-                Window printPreviewButton = printPreviewWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "印刷");
-
-                printPreviewButton.MouseMove(PointMode.LeftTop, 55, 18, 340);
-                printPreviewButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 55, 18); Thread.Sleep(4774);
-
+                mapWindow = mapWindow.WaitForActive(1000);
+                Trace.WriteLine("マップ画面が取れないよ");
             }
-            catch (Exception ex)
+            Trace.WriteLine("マップ画面が取れたよ");
+
+            Window printPreviewButton = mapWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "印刷");
+            while (!printPreviewButton.IsExists() || !printPreviewButton.IsEnabled())
             {
-                Trace.WriteLine("[Source]\n" + ex.Source + "\n\n[Message]\n" + ex.Message + "\n\n[StackTrace]\n" + ex.StackTrace);
+                printPreviewButton = printPreviewButton.WaitForActive(1000);
+                Trace.WriteLine("印刷ボタンが取れないよ");
             }
+            Trace.WriteLine("印刷ボタンが取れたよ");
+
+            Thread.Sleep(10000);
+            printPreviewButton.MouseMove(PointMode.LeftTop, 55, 18, 340);
+            printPreviewButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 55, 18); Thread.Sleep(4774);
+            Trace.WriteLine("印刷ボタンを押したよ");
+
         }
 
 
-       public void StartPrint()
+        public void StartPrint()
         {
-            try
+            Window.BreakKey = KBtn.ESCAPE;
+            Process P01 = theProcess;
+
+            Window printDialog = Window.GetTopChild(P01.Id, "#32770", "印刷");
+            while (printDialog == null)
             {
-                Window.BreakKey = KBtn.ESCAPE;
-                Process P01 = theProcess;
-
-                Window printDialog = Window.GetTopChild(P01.Id, "#32770", "印刷");
-                while (printDialog == null)
-                {
-                    Thread.Sleep(1000);
-                    printDialog = Window.GetTopChild(P01.Id, "#32770", "印刷");
-                }
-
-                Window printButton = printDialog.GetChild("Button", "OK");
-
-                printButton.MouseMove(PointMode.LeftTop, 28, 5, 572);
-                printButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 28, 5); Thread.Sleep(141);
+                Thread.Sleep(1000);
+                printDialog = Window.GetTopChild(P01.Id, "#32770", "印刷");
             }
-            catch (Exception ex)
-            {
-                Trace.WriteLine("[Source]\n" + ex.Source + "\n\n[Message]\n" + ex.Message + "\n\n[StackTrace]\n" + ex.StackTrace);
-            }
+
+            Window printButton = printDialog.GetChild("Button", "OK");
+
+            printButton.MouseMove(PointMode.LeftTop, 28, 5, 572);
+            printButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 28, 5); Thread.Sleep(141);
         }
- 
+
         public override void Close()
         {
-            try
-            {
-                Window.BreakKey = KBtn.ESCAPE;
+            Window.BreakKey = KBtn.ESCAPE;
 
-               if (theProcess == null)
-                    return;
+            if (theProcess == null)
+                return;
 
-                Process P01 = theProcess;
+            Process P01 = theProcess;
 
-                Window closeButton = theWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "終了");
-                theWindow.SetFocus();
-                closeButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 44, 16); Thread.Sleep(148);
+            Window closeButton = theWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "終了");
+            theWindow.SetFocus();
+            closeButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 44, 16); Thread.Sleep(148);
 
-                Window confirm = Window.GetTopChild(P01.Id, "#32770", "確認");
-                confirm.SetForeground();
-                Window yesButton = confirm.GetChild("Button", "はい(&Y)");
+            Window confirm = Window.GetTopChild(P01.Id, "#32770", "確認");
+            confirm.SetForeground();
+            Window yesButton = confirm.GetChild("Button", "はい(&Y)");
 
-                yesButton.WaitForActive(2000);
-                yesButton.SetFocus();
-                yesButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 27, 20);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(string.Format("{0}\n{1}", ex.GetType().Name, ex.Message));
-            }
+            yesButton.WaitForActive(2000);
+            yesButton.SetFocus();
+            yesButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 27, 20);
 
         }
 

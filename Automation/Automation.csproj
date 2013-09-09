@@ -34,6 +34,9 @@
     <Reference Include="FNF.WindowController">
       <HintPath>..\..\..\..\..\..\..\tools\WindowController\FNF.WindowController.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.1.2\lib\net35\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Oban.Notification">
       <HintPath>..\..\Oban\Release\Oban.Notification.dll</HintPath>
     </Reference>
@@ -57,6 +60,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -26,29 +26,29 @@ namespace ReportPrintAutomator
 
             bw.StartDate = lastMonday;
             bw.EndDate = thisSunday;
-            // カットソー
-            bw.CriteriaSettings = new List<Action>(){bw.SetCutSawn};
-            bw.Output("cutsawn", "cut_image");
+            //// カットソー
+            //bw.CriteriaSettings = new List<Action>(){bw.SetCutSawn};
+            //bw.Output("cutsawn", "cut_image");
 
-            // ニット
-            bw.CriteriaSettings = new List<Action>(){bw.SetKnit};
-            bw.Output("knit", "knit_image");
+            //// ニット
+            //bw.CriteriaSettings = new List<Action>(){bw.SetKnit};
+            //bw.Output("knit", "knit_image");
 
             // 布帛 
             bw.CriteriaSettings = new List<Action>(){bw.SetCloth};
             bw.Output("cloth", "cloth_image");
 
-            // パンツ 
-            bw.CriteriaSettings = new List<Action>(){bw.SetPants};
-            bw.Output("pants", "pants_image");
+            //// パンツ 
+            //bw.CriteriaSettings = new List<Action>(){bw.SetPants};
+            //bw.Output("pants", "pants_image");
 
-            // ジャケット 
-            bw.CriteriaSettings = new List<Action>(){bw.SetJacket};
-            bw.Output("jacket", "jacket_image");
+            //// ジャケット 
+            //bw.CriteriaSettings = new List<Action>(){bw.SetJacket};
+            //bw.Output("jacket", "jacket_image");
 
-            // ワンピース 
-            bw.CriteriaSettings = new List<Action>(){bw.SetOnePiece};
-            bw.Output("onepiece", "onepiece_image");
+            //// ワンピース 
+            //bw.CriteriaSettings = new List<Action>(){bw.SetOnePiece};
+            //bw.Output("onepiece", "onepiece_image");
             this.Close();
         }
 
@@ -105,6 +105,8 @@ namespace ReportPrintAutomator
             DateTime lastWeekMonday = DateTimeExpander.LastWeekMonday;
             DateTime lastSunday = DateTimeExpander.LastSunday;
             Automation.DetailData dd = new Automation.DetailData();
+            dd.StartDate = lastWeekMonday;
+            dd.EndDate = lastSunday;
             List<Action> smallActions = new List<Action>()
             {
                 // 店舗別に出力
@@ -120,6 +122,8 @@ namespace ReportPrintAutomator
             DateTime lastMonday = DateTimeExpander.LastWeekMonday.AddDays(7);
             DateTime nextSunday = DateTimeExpander.LastSunday.AddDays(7);
             Automation.ItemMap im = new ItemMap();
+            im.StartDate = lastMonday;
+            im.EndDate = nextSunday;
             List<Action> smallActions = new List<Action>()
             {
                 // 中分類別に出力

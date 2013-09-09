@@ -36,6 +36,9 @@
     <Reference Include="FNF.WindowController">
       <HintPath>..\..\..\tools\WindowController\FNF.WindowController.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.1.2\lib\net35\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Oban.Notification">
       <HintPath>..\..\Oban\Release\Oban.Notification.dll</HintPath>
     </Reference>
@@ -63,7 +66,7 @@
   <PropertyGroup>
     <PostBuildEvent>mkdir $(ProjectDir)$(ProjectName)
 copy $(TargetDir)* $(ProjectDir)$(ProjectName)
-copy $(TargetDir)* \\SgtPepper\tool</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

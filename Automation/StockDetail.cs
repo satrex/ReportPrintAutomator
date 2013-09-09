@@ -10,6 +10,10 @@ namespace Automation
 {
     public class StockDetail: HonbuAutomation
     {
+        /// <summary>
+        /// 帳票の作成、ファイルの保存、印刷を行います。
+        /// </summary>
+        /// <param name="fileSuffix">保存するファイル名の末尾を指定します。</param>
         public void Output(string fileSuffix)
         {
             // 大分類別

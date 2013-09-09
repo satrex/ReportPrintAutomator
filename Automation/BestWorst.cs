@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using FNF.WindowController;
 using Oban.Notification;
+using NLog;
 
 namespace Automation
 {
