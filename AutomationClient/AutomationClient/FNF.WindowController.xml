@@ -1,0 +1,1112 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FNF.WindowController</name>
+    </assembly>
+    <members>
+        <member name="T:FNF.WindowController.WindowMenu">
+            <summary>
+            Windowのメニューを現します。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.WindowMenuItem">
+            <summary>
+            Windowのメニューの項目を現します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.WindowMenuItem.Select(System.Boolean)">
+            <summary>
+            メニュー項目を選択します。
+            </summary>
+            <param name="bPost">メッセージ送信方法（false:SendMessage、true:PostMessage）</param>
+        </member>
+        <member name="T:FNF.WindowController.WindowTreeView">
+            <summary>
+            Windowのツリービューを現します。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.WindowTreeViewItem">
+            <summary>
+            Windowのツリービューの項目を現します。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.WindowTab">
+            <summary>
+            Windowのタブを現します。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.WindowTabItem">
+            <summary>
+            Windowのタブの項目を現します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.WindowTabItem.Focus">
+            <summary>
+            タブ項目を選択します。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.WindowException">
+            <summary>
+            Windowクラス内で発生する例外。
+            Typeメンバと、Messageメンバに詳細が格納されます。
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.WindowException.Type">
+            <summary>
+            例外の種類
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.WindowException.#ctor(FNF.WindowController.WindowExceptionType,System.String)">
+            <summary>
+            コンストラクタ。
+            </summary>
+            <param name="wetType" >例外の種類</param>
+            <param name="sMessage">メッセージ</param>
+        </member>
+        <member name="T:FNF.WindowController.Tool.ProcessMemoryAllocator">
+            <summary>
+            他のプロセス上にメモリを確保し、データを読み書きします。
+            使用例）SendMessageの引数で構造体を渡す場合。
+            ※PostMessageで利用する場合は送信先が処理を完了するまでDisposeしないようにして下さい。
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.KBtn.NoBreak">
+            <summary>仮想キー入力ではありません。BreakKey専用です。Key関数では利用しないでください。</summary>
+        </member>
+        <member name="F:FNF.WindowController.KBtn.Wait1">
+            <summary>仮想キー入力ではありません。Key関数でキー入力の間隔をあけたい場合に指定して下さい（1ms 0.001秒）</summary>
+        </member>
+        <member name="F:FNF.WindowController.KBtn.Wait10">
+            <summary>仮想キー入力ではありません。Key関数でキー入力の間隔をあけたい場合に指定して下さい（10ms 0.01秒）</summary>
+        </member>
+        <member name="F:FNF.WindowController.KBtn.Wait100">
+            <summary>仮想キー入力ではありません。Key関数でキー入力の間隔をあけたい場合に指定して下さい（100ms 0.1秒）</summary>
+        </member>
+        <member name="F:FNF.WindowController.KBtn.Wait1000">
+            <summary>仮想キー入力ではありません。Key関数でキー入力の間隔をあけたい場合に指定して下さい（1000ms 1秒）</summary>
+        </member>
+        <member name="T:FNF.WindowController.WindowRect">
+            <summary>
+            ウィンドウの領域と、ウィンドウ内のクライアント領域を現します。
+            ２個のSystem.Drawing.Rectangle構造体です。
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.WindowRect.Window">
+            <summary>
+            ウィンドウの領域を現します。
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.WindowRect.Client">
+            <summary>
+            ウィンドウ内のクライアント領域を現します。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.Window">
+            <summary>
+            ウィンドウを制御するためのクラス。
+            newではオブジェクトを生成できません。各種static関数でオブジェクトを生成してください。
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.Window.BeforeWaitForActive">
+            <summary>
+            メッセージ送信系関数で対象Windowがアクティブになるまで待機するかどうか。
+            trueの場合、処理毎にWaitForActiveが呼ばれます。
+            デフォルトはfalseです。
+            対象関数：SendMessage, PostMessage, SetText, GetText, WmCommand, KeyM, KeyE, MouseM, MouseE, MouseWheel, Close, Open, Exit, SetForeground, SetFocus, SetEnable, Move, Update, SetLayerd, Show
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.Window.WaitTime">
+            <summary>
+            メッセージ送信系関数・子ウィンドウ取得系関数で、対象Windowが有効になるまで待機する時間(ms)。
+            デフォルトは5000です。
+            対象関数：SendMessage, PostMessage, SetText, GetText, WmCommand, KeyM, KeyF, MouseM, MouseF, MouseMove, Close, Open, Exit, SetForeground, SetFocus,  SetEnable, Move, Update, SetLayerd, Show, GetWindowRect, GetTopChildList, GetTopChild, GetChildList, GetChild
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.Window.BreakKey">
+            <summary>
+            メッセージ送信系関数実行前に、キー入力状態を調べ、指定されたキーが押されていた場合、WindowExceptionが発生します。
+            入力ブロック(BlockStart)中は、キー入力が無効のため、この機能は働きません。。
+            KBtn.NoBreakを指定すると無効になります。
+            デフォルトはKBtn.NoBreakです。
+            対象関数：SendMessage, PostMessage, SetText, GetText, WmCommand, KeyM, KeyE, MouseM, MouseE, MouseWheel, Close, Open, Exit, SetForeground, SetFocus, SetEnable, Move, Update,SetLayerd, Show
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.Window.RectForm">
+            <summary>
+            RectDraw関数で表示される枠。Windowの外枠を強調表示します。
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.Window.RectPoint">
+            <summary>
+            RectDraw関数で表示される枠内の点。
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.Window.RectLabel">
+            <summary>
+            RectDraw関数で表示される枠内のラベル。
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.Window.PID">
+            <summary>
+            プロセスID
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.Window.HWND">
+            <summary>
+            ウィンドウハンドル
+            </summary>
+        </member>
+        <member name="F:FNF.WindowController.Window.Class">
+            <summary>
+            ウィンドウクラス名。
+            1024バイト以上の場合は先頭の1024バイトのみを取得します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChildList(System.Int32,System.String,System.String)">
+            <summary>
+            条件に合致する、配下の子Windowを列挙します。
+            </summary>
+            <param name="iProcessID">プロセスID(0で全てに一致)</param>
+            <param name="sClass"    >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"     >ウィンドウテキスト（nullですべてに一致）</param>
+            <returns>条件に該当したWindowの配列</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChildList(System.Int32,System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex)">
+            <summary>
+            条件に合致する、配下の子Windowを列挙します。
+            </summary>
+            <param name="iProcessID">プロセスID(0で全てに一致)</param>
+            <param name="rClass"    >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"     >ウィンドウテキスト（正規表現）</param>
+            <returns>条件に該当したWindowの配列</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChildList(System.String,System.String,System.String)">
+            <summary>
+            条件に合致する、配下の子Windowを列挙します。
+            </summary>
+            <param name="sProcessName">プロセス名</param>
+            <param name="sClass"      >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"       >ウィンドウテキスト（nullですべてに一致）</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChildList(System.String,System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex)">
+            <summary>
+            条件に合致する、配下の子Windowを列挙します。
+            </summary>
+            <param name="sProcessName">プロセス名</param>
+            <param name="rClass"      >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"       >ウィンドウテキスト（正規表現）</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChildList(System.Int32)">
+            <summary>
+            条件に合致する、配下の子Windowを列挙します。
+            </summary>
+            <param name="iProcessID">プロセスID(0で全てに一致)</param>
+            <returns>条件に該当したWindowの配列</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChild(System.Int32,System.String,System.String)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致する子Windowがない場合はnullを返します。
+            合致する子Windowが複数存在する場合はWindowExceptionが発生します。
+            </summary>
+            <param name="iProcessID">プロセスID</param>
+            <param name="sClass"    >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"     >ウィンドウテキスト（nullですべてに一致）</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChild(System.Int32,System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致する子Windowがない場合はnullを返します。
+            合致する子Windowが複数存在する場合はWindowExceptionが発生します。
+            </summary>
+            <param name="iProcessID">プロセスID</param>
+            <param name="rClass"    >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"     >ウィンドウテキスト（正規表現）</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChild(System.Int32,System.String,System.String,System.Int32)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致する子Windowがない場合はnullを返します。
+            </summary>
+            <param name="iProcessID">プロセスID</param>
+            <param name="sClass"    >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"     >ウィンドウテキスト（nullですべてに一致）</param>
+            <param name="iSameNum"  >ウィンドウクラス名・ウィンドウテキストが同一の子Windowの中で何番目のWindowか</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChild(System.Int32,System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex,System.Int32)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致する子Windowがない場合はnullを返します。
+            </summary>
+            <param name="iProcessID">プロセスID</param>
+            <param name="rClass"    >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"     >ウィンドウテキスト（正規表現）</param>
+            <param name="iSameNum"  >ウィンドウクラス名・ウィンドウテキストがマッチした子Windowの中で何番目のWindowか</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChild(System.String,System.String,System.String)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致するProcessがない場合はWindowExceptionが発生します。
+            合致するProcessが複数存在する場合はWindowExceptionが発生します。
+            合致する子Windowがない場合はnullを返します。
+            </summary>
+            <param name="sProcessName">プロセス名</param>
+            <param name="sClass"      >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"       >ウィンドウテキスト（nullですべてに一致）</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChild(System.String,System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致するProcessがない場合はWindowExceptionが発生します。
+            合致するProcessが複数存在する場合はWindowExceptionが発生します。
+            合致する子Windowがない場合はnullを返します。
+            </summary>
+            <param name="sProcessName">プロセス名</param>
+            <param name="rClass"      >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"       >ウィンドウテキスト（正規表現）</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChild(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致するProcessがない場合はWindowExceptionが発生します。
+            合致するProcessが複数存在する場合はWindowExceptionが発生します。
+            合致する子Windowがない場合はnullを返します。
+            </summary>
+            <param name="sProcessName">プロセス名</param>
+            <param name="sClass"      >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"       >ウィンドウテキスト（nullですべてに一致）</param>
+            <param name="iSameNum"    >ウィンドウクラス名・ウィンドウテキストが同一の子Windowの中で何番目のWindowか</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetTopChild(System.String,System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex,System.Int32)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致するProcessがない場合はWindowExceptionが発生します。
+            合致するProcessが複数存在する場合はWindowExceptionが発生します。
+            合致する子Windowがない場合はnullを返します。
+            </summary>
+            <param name="sProcessName">プロセス名</param>
+            <param name="rClass"      >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"       >ウィンドウテキスト（正規表現）</param>
+            <param name="iSameNum"    >ウィンドウクラス名・ウィンドウテキストがマッチした子Windowの中で何番目のWindowか</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetChildList(System.String,System.String)">
+            <summary>
+            条件に合致する、配下の子Windowを列挙します。
+            </summary>
+            <param name="sClass"    >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"     >ウィンドウテキスト（nullですべてに一致）</param>
+            <returns>条件に該当したWindowの配列</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetChildList(System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex)">
+            <summary>
+            条件に合致する、配下の子Windowを列挙します。
+            </summary>
+            <param name="rClass"    >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"     >ウィンドウテキスト（正規表現）</param>
+            <returns>条件に該当したWindowの配列</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetChildList">
+            <summary>
+            配下の子Windowを列挙します。
+            </summary>
+            <returns>条件に該当したWindowの配列</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetChild(System.String,System.String)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致する子Windowがない場合はnullを返します。
+            合致する子Windowが複数存在する場合はWindowExceptionが発生します。
+            </summary>
+            <param name="sClass"    >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"     >ウィンドウテキスト（nullですべてに一致）</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetChild(System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致する子Windowがない場合はnullを返します。
+            合致する子Windowが複数存在する場合はWindowExceptionが発生します。
+            </summary>
+            <param name="rClass"    >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"     >ウィンドウテキスト（正規表現）</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetChild(System.String,System.String,System.Int32)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致する子Windowがない場合はnullを返します。
+            </summary>
+            <param name="sClass"    >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"     >ウィンドウテキスト（nullですべてに一致）</param>
+            <param name="iSameNum"  >ウィンドウクラス名・ウィンドウテキストが同一の子Windowの中で何番目のWindowか</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetChild(System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex,System.Int32)">
+            <summary>
+            条件に合致する、配下の子Windowを返します。
+            合致する子Windowがない場合はnullを返します。
+            </summary>
+            <param name="rClass"    >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"     >ウィンドウテキスト（正規表現）</param>
+            <param name="iSameNum"  >ウィンドウクラス名・ウィンドウテキストがマッチする子Windowの中で何番目のWindowか</param>
+            <returns>条件に該当したWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetWindow(System.IntPtr)">
+            <summary>
+            指定されたウィンドウハンドルを持つWindowを返します。
+            </summary>
+            <param name="ipHWND">ウィンドウハンドル</param>
+            <returns>指定されたウィンドウハンドルを持つWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetWindow(System.Int32,System.Int32)">
+            <summary>
+            指定されたディスプレイ座標に位置するWindowを返します。
+            </summary>
+            <param name="iX">ディスプレイ座標X</param>
+            <param name="iY">ディスプレイ座標Y</param>
+            <returns>指定された座標にあるWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetForegroundWindow">
+            <summary>
+            フォアグラウンドWindowを返します。
+            ※関数呼び出し時にフォアグラウンドなWindowを返します。それ以降にフォアグラウンドが変化しても反映されません。
+            </summary>
+            <returns>フォアグラウンドのWindow</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetParent">
+            <summary>
+            親ウィンドウを取得します。
+            親ウィンドウが存在しない場合、nullを返します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetRoot">
+            <summary>
+            ルートウィンドウを取得します。
+            ルートウィンドウを取得できない場合、nullを返します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.Window.SendMessage(FNF.WindowController.API.P_WM,System.IntPtr,System.IntPtr)">
+            <summary>
+            Win32APIのSendMessageをWindowに送信します。
+            </summary>
+            <param name="Msg"   >ウィンドウメッセージ</param>
+            <param name="wParam">パラメータw</param>
+            <param name="lParam">パラメータl</param>
+            <returns>SendMessageからの返り値です</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.PostMessage(FNF.WindowController.API.P_WM,System.IntPtr,System.IntPtr)">
+            <summary>
+            Win32APIのPostMessageをWindowに送信します。
+            </summary>
+            <param name="Msg"   >ウィンドウメッセージ</param>
+            <param name="wParam">パラメータw</param>
+            <param name="lParam">パラメータl</param>
+            <returns>PostMessageからの返り値です</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.SetText(System.String)">
+            <summary>
+            WindowにSendMessageでWM_SETTEXTメッセージを送信します。
+            </summary>
+            <param name="sText">送信する文字列</param>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetText">
+            <summary>
+            WindowにSendMessageでWM_GETTEXTメッセージを送信し、文字列を取得します。
+            </summary>
+            <returns>取得した文字列</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.WmCommand(System.Boolean,System.UInt16,FNF.WindowController.API.P_N_CTRL,System.IntPtr)">
+            <summary>
+            WM_COMMANDメッセージを送信します。
+            </summary>
+            <param name="bPost"      >メッセージ送信方法（false:SendMessage、true:PostMessage）</param>
+            <param name="wID"        >送信元のID（メニューアイテム、コントロール、アクセラレーター）</param>
+            <param name="wNotifyCode">送信元がメニューの場合0、アクセラレータの場合1、コントロールの場合通知コード。</param>
+            <param name="hwndControl">送信元がコントロールの場合コントロールのウィンドウハンドル、それ以外の場合はIntPtr.Zero。</param>
+            <returns></returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.KeyM(FNF.WindowController.KOtherBtn,FNF.WindowController.KBtn[])">
+            <summary>
+            Windowにキー入力を送信します。
+            PostMessageでWM_KEYDOWN/WM_KEYUP, WM_SYSKEYDOWN/WM_SYSKEYUPなどを送信します。
+            ※ALTを同時押しする場合は、Windowをフォアグラウンドにしてからでないと、うまく動作しないようです。。
+            </summary>
+            <param name="eOtherKey">同時押しするキー</param>
+            <param name="eKeys"    >入力するキー</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.KeyE(FNF.WindowController.KType,FNF.WindowController.KBtn[])">
+            <summary>
+            Windowにキー入力を送信します。
+            keybd_eventを利用してキー操作を合成します。
+            ウィンドウはフォアグラウンドになります。
+            次のキーはEXTENDKEYとして合成されます。
+            RCONTROL, RMENU, RSHIFT, INSERT, DELETE, HOME, END, PRIOR, NEXT, UP, DOWN, LEFT, RIGHT, NUMLOCK, CANCEL, SNAPSHOT, APPS, LWIN, RWIN
+            よって、テンキー上のENTER, DIVIDEと、NumLockOff状態でのテンキー操作は合成できません。
+            </summary>
+            <param name="eType">操作（クリック、押すだけ、離すだけ）</param>
+            <param name="eKeys" >入力するキー</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.MouseM(System.Boolean,FNF.WindowController.MType,FNF.WindowController.MBtn,FNF.WindowController.MOtherBtn,FNF.WindowController.PointMode,System.Int32,System.Int32)">
+            <summary>
+            Windowにマウス入力を送信します。
+            指定する座標はウィンドウのクライアント領域の座標です。
+            SendMessageまたはPostMessageでWM_?BUTTONDOWN,WM_?BUTTONUP,WM_?BUTTONDBLCLK,WM_MOUSEMOVEなどを送信します。
+            ※SendMessageの場合、処理が長時間帰ってこなくなるWindowがあります。その場合はPostMessageを利用してください。
+            </summary>
+            <param name="bPost"       >メッセージ送信方法（false:SendMessage、true:PostMessage）</param>
+            <param name="eType"       >マウス操作（クリック、ダブルクリック、押すだけ、離すだけ、移動するだけ）</param>
+            <param name="eButton"     >押すマウスボタン</param>
+            <param name="eOtherButton">同時押しする仮想キー</param>
+            <param name="pmMode"      >座標指定方法（左上中心、右上中心、左下中心、右下中心、割合指定）</param>
+            <param name="iX"          >X座標（割合指定の場合は0～100）</param>
+            <param name="iY"          >Y座標（割合指定の場合は0～100）</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.MouseE(FNF.WindowController.MType,FNF.WindowController.MBtn,FNF.WindowController.PointMode,System.Int32,System.Int32)">
+            <summary>
+            Windowにマウス入力を送信します。
+            指定する座標はウィンドウのクライアント領域の座標です。
+            mouse_eventを利用してマウス操作を合成します。
+            ウィンドウはフォアグラウンドになります。
+            </summary>
+            <param name="eType"       >マウス操作（クリック、ダブルクリック、押すだけ、離すだけ、移動するだけ）</param>
+            <param name="eButton"     >押すマウスボタン</param>
+            <param name="pmMode"      >座標指定方法（左上中心、右上中心、左下中心、右下中心、割合指定）</param>
+            <param name="iX"          >X座標（割合指定の場合は0～100）</param>
+            <param name="iY"          >Y座標（割合指定の場合は0～100）</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.MouseWheel(System.Int16,FNF.WindowController.PointMode,System.Int32,System.Int32)">
+            <summary>
+            Windowにマウスホイールを送信します。
+            指定する座標はウィンドウのクライアント領域の座標です。
+            mouse_eventを利用してマウスホイール操作を合成します。
+            </summary>
+            <param name="iWheel"      >ホイールする量。120で1クリック分です。手前へホイールする場合は負の値を指定して下さい。</param>
+            <param name="pmMode"      >座標指定方法（左上中心、右上中心、左下中心、右下中心、割合指定）</param>
+            <param name="iX"          >X座標（割合指定の場合は0～100）</param>
+            <param name="iY"          >Y座標（割合指定の場合は0～100）</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.MouseMove(FNF.WindowController.PointMode,System.Int32,System.Int32)">
+            <summary>
+            マウスカーソルを移動します。
+            指定する座標はウィンドウのクライアント領域の座標です。
+            Mouse関数で移動させた場合はメッセージを送っているだけで実際には移動しませんが、
+            MouseMove関数では実際にマウスカーソルが移動します。
+            </summary>
+            <param name="pmMode">座標指定方法（左上中心、右上中心、左下中心、右下中心、割合指定）</param>
+            <param name="iX">X座標（割合指定の場合は0～100）</param>
+            <param name="iY">Y座標（割合指定の場合は0～100）</param>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.MouseMove(FNF.WindowController.PointMode,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            マウスカーソルを移動します。（現在の位置から指定位置まで徐々に移動）
+            指定する座標はウィンドウのクライアント領域の座標です。
+            Mouse関数で移動させた場合はメッセージを送っているだけで実際には移動しませんが、
+            MouseMove関数では実際にマウスカーソルが移動します。
+            </summary>
+            <param name="pmMode"   >座標指定方法（左上中心、右上中心、左下中心、右下中心、割合指定）</param>
+            <param name="iX"       >X座標（割合指定の場合は0～100）</param>
+            <param name="iY"       >Y座標（割合指定の場合は0～100）</param>
+            <param name="iWaitTime">移動に費やす時間(ms)</param>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.Close">
+            <summary>
+            ウィンドウを最小化します。
+            </summary>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.Open">
+            <summary>
+            最小化状態のウィンドウを元に戻します。
+            </summary>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.Exit">
+            <summary>
+            ウィンドウを閉じます。(WM_CLOSEを送ります)
+            </summary>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.SetEnable(System.Boolean)">
+            <summary>
+            ウィンドウの有効・無効を切り替えます。
+            </summary>
+            <param name="bEnable">有効にするかどうか。(true:有効化, false:無効化)</param>
+            <returns>ウィンドウが無効になっている場合true,有効の場合false（？）</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.SetLayered(System.UInt32,System.Byte,FNF.WindowController.API.P_LWA)">
+            <summary>
+            ウィンドウの透過状態を設定します。
+            ※StyleExにWS_EX_LAYEREDが追加されます。
+            ※トップレベルのウィンドウしか設定できません。
+            </summary>
+            <param name="uiColor">LWA_ALPHAの時のみ有効…透過する色</param>
+            <param name="bAlpha" >LWA_COLORKEYの時のみ有効…不透明度（0:透明～255:不透明）</param>
+            <param name="pFlag"  >透過状態の形式（LWA_ALPHA:ウィンドウの不透明度を指定、LWA_COLORKEY:ウィンドウ内で透過する色を指定）</param>
+            <returns>以前のWS_EX_LAYEREDの状態（true:既に設定済みだった、false：設定されていなかった）</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.SetForeground">
+            <summary>
+            ウィンドウをフォアグラウンドにします。
+            </summary>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.SetFocus">
+            <summary>
+            ウィンドウにフォーカスをあわせます。（フォアグラウンドにするわけではありません）
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.Window.Move(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            ウィンドウの領域を変更します。
+            </summary>
+            <param name="iX"     >ウィンドウの左上のX座標(親ウィンドウのクライアント領域内の座標)</param>
+            <param name="iY"     >ウィンドウの左上のY座標(親ウィンドウのクライアント領域内の座標)</param>
+            <param name="iWidth" >ウィンドウの横幅</param>
+            <param name="iHeight">ウィンドウの高さ</param>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.Move(System.Drawing.Rectangle)">
+            <summary>
+            ウィンドウの領域を変更します。
+            </summary>
+            <param name="rRect">ウィンドウの領域</param>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.Update">
+            <summary>
+            ウィンドウのクライアント領域を更新します。
+            </summary>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.Show(FNF.WindowController.API.P_SW)">
+            <summary>
+            ウィンドウの表示状態を変更します。
+            </summary>
+            <param name="pShowType">表示状態を示す値。</param>
+            <returns>直前にウィンドウが表示されていたかどうか。（true:表示されていた, false：表示されていなかった）</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetAnimation">
+            <summary>
+            ウィンドウの最小化時などにアニメーションを行うかどうかを取得します。
+            </summary>
+            <returns>0はアニメーションしない。それ以外はアニメーションする。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.SetAnimation(System.Int32)">
+            <summary>
+            ウィンドウの最小化時などにアニメーションを行うかどうかを設定します。
+            </summary>
+            <param name="iMinAnimate">0はアニメーションしない。それ以外(1)はアニメーションする。</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetWindowRect">
+            <summary>
+            ウィンドウの領域を取得します。ディスプレイ上での領域です。
+            </summary>
+            <returns>ウィンドウの領域。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetPoint(FNF.WindowController.PointMode,System.Int32,System.Int32)">
+            <summary>
+            ウィンドウ内の座標を変換します。（左上中心だと元の座標のままです）
+            通常の座標（左上中心）から、指定された座標形式へ変換します。
+            </summary>
+            <param name="pmMode">座標形式（左上中心、右上中心、左下中心、右下中心、割合指定）</param>
+            <param name="iX"    >X座標（割合指定の場合は0～100）</param>
+            <param name="iY"    >Y座標（割合指定の場合は0～100）</param>
+            <returns>変換後の座標</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetPointRev(FNF.WindowController.PointMode,System.Int32,System.Int32)">
+            <summary>
+            ウィンドウ内の座標を変換します。（左上中心だと元の座標のままです）
+            指定された座標形式から、通常の座標（左上中心）へ変換します。
+            </summary>
+            <param name="pmMode">座標形式（左上中心、右上中心、左下中心、右下中心、割合指定）</param>
+            <param name="iX"    >X座標（割合指定の場合は0～100）</param>
+            <param name="iY"    >Y座標（割合指定の場合は0～100）</param>
+            <returns>変換後の座標</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetModuleFileName">
+            <summary>
+            ウィンドウのモジュールファイル名を返します。かなりテキトーです。。
+            </summary>
+            <returns>モジュールファイル名</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetLayered(System.UInt32@,System.Byte@,FNF.WindowController.API.P_LWA@)">
+            <summary>
+            ウィンドウの透過状態を取得します。
+            ※このメソッドはWindowsXP以上用です。Windows2000の場合は失敗します。
+            </summary>
+            <param name="uiColor">透過する色の格納先</param>
+            <param name="bAlpha" >不透明度の格納先（0:透明～255:不透明）</param>
+            <param name="pFlag"  >透過状態の形式の格納先（LWA_ALPHA:ウィンドウの不透明度を指定、LWA_COLORKEY:ウィンドウ内で透過する色を指定）</param>
+            <returns>true:成功、false：失敗</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetImage(System.Boolean)">
+            <summary>
+            ウィンドウの画像を取得します。
+            ウィンドウが最前面にないと正しく取得できません。
+            マウスカーソルは取得しません。
+            </summary>
+            <param name="bClient">true:Client領域を取得, false:Window全体を取得</param>
+            <returns>取得した画像</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetImage(System.Boolean,System.Drawing.Image)">
+            <summary>
+            ウィンドウの画像を取得します。
+            ウィンドウが最前面にないと正しく取得できません。
+            マウスカーソルは取得しません。
+            </summary>
+            <param name="bClient">true:Client領域を取得, false:Window全体を取得</param>
+            <param name="iImage" >取得した画像の格納先</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetImage(System.Boolean,System.Boolean)">
+            <summary>
+            ウィンドウの画像を取得します。
+            ウィンドウが最前面にないと正しく取得できません。
+            </summary>
+            <param name="bClient">true:Client領域を取得, false:Window全体を取得</param>
+            <param name="bCursor">true:マウスカーソルも取得, false:マウスカーソルは取得しない</param>
+            <returns>取得した画像</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetImage(System.Boolean,System.Boolean,System.Drawing.Image)">
+            <summary>
+            ウィンドウの画像を取得します。
+            ウィンドウが最前面にないと正しく取得できません。
+            </summary>
+            <param name="bClient">true:Client領域を取得, false:Window全体を取得</param>
+            <param name="bCursor">true:マウスカーソルも取得, false:マウスカーソルは取得しない</param>
+            <param name="iImage" >取得した画像の格納先</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetImage(System.Boolean,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            ウィンドウの画像を取得します。
+            ウィンドウが最前面にないと正しく取得できません。
+            </summary>
+            <param name="bClient">true:Client領域を取得, false:Window全体を取得</param>
+            <param name="bCursor">true:マウスカーソルも取得, false:マウスカーソルは取得しない</param>
+            <param name="iBmpWidth" >生成するBitmapの横幅</param>
+            <param name="iBmpHeight">生成するBitmapの高さ</param>
+            <returns>取得した画像</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetImage2(System.Boolean)">
+            <summary>
+            ウィンドウの画像を取得します。
+            ウィンドウが最前面でなくても取得できますが、最小化している場合は取得できません。
+            マウスカーソルは取得しません。
+            WindowsXP以上でないと動作しません。(API:PrintWindowを利用するため)
+            ※対象によっては表示が乱れたりブルースクリーンに陥る場合があるようです。ご注意ください。
+            </summary>
+            <param name="bClient">true:Client領域を取得, false:Window全体を取得</param>
+            <returns>取得した画像</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetImage2(System.Boolean,System.Boolean)">
+            <summary>
+            ウィンドウの画像を取得します。
+            ウィンドウが最前面でなくても取得できますが、最小化している場合は取得できません。
+            WindowsXP以上でないと動作しません。(API:PrintWindowを利用するため)
+            ※対象によっては表示が乱れたりブルースクリーンに陥る場合があるようです。ご注意ください。
+            </summary>
+            <param name="bClient">true:Client領域を取得, false:Window全体を取得</param>
+            <param name="bCursor">true:マウスカーソルも取得, false:マウスカーソルは取得しない</param>
+            <returns>取得した画像</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetImage2(System.Boolean,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            ウィンドウの画像を取得します。
+            ウィンドウが最前面でなくても取得できますが、最小化している場合は取得できません。
+            WindowsXP以上でないと動作しません。(API:PrintWindowを利用するため)
+            ※対象によっては表示が乱れたりブルースクリーンに陥る場合があるようです。ご注意ください。
+            </summary>
+            <param name="bClient">true:Client領域を取得, false:Window全体を取得</param>
+            <param name="bCursor">true:マウスカーソルも取得, false:マウスカーソルは取得しない</param>
+            <param name="iWidth" >生成するBitmapの横幅</param>
+            <param name="iHeight">生成するBitmapの高さ</param>
+            <returns>取得した画像</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.GetPixel(FNF.WindowController.PointMode,System.Int32,System.Int32)">
+            <summary>
+            ウィンドウ内の指定された座標の色を取得します。
+            ウィンドウが最前面にないと正しく取得できません。
+            </summary>
+            <param name="pmMode">座標形式（左上中心、右上中心、左下中心、右下中心）</param>
+            <param name="iX"    >X座標</param>
+            <param name="iY"    >Y座標</param>
+            <returns>指定された座標の色</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.IsZoomed">
+            <summary>
+            ウィンドウが最大化状態かどうか。
+            </summary>
+            <returns>最大化状態の場合trueを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.IsIconic">
+            <summary>
+            ウィンドウが最小化状態かどうか。
+            </summary>
+            <returns>最小化状態の場合trueを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.IsVisible">
+            <summary>
+            ウィンドウが可視状態かどうか。
+            </summary>
+            <returns>可視状態の場合trueを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.IsEnabled">
+            <summary>
+            ウィンドウが有効状態かどうか。
+            </summary>
+            <returns>有効状態の場合trueを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.IsExists">
+            <summary>
+            ウィンドウが存在するかどうか。
+            Windowオブジェクトを取得後に、実ウィンドウが閉じられた場合にfalseになります。
+            </summary>
+            <returns>存在する場合trueを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.WaitForChildActive(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            条件で指定された子ウィンドウがアクティブになるまで待機します。
+            タイムアウトした場合nullを返します。
+            </summary>
+            <param name="sClass"      >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"       >ウィンドウテキスト（nullですべてに一致）</param>
+            <param name="iSameNum"    >ウィンドウクラス名・ウィンドウテキストが同一の子Windowの中で何番目のWindowか</param>
+            <param name="iMiliSeconds">待機する最大秒数</param>
+            <returns>条件に合致した子Window</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.WaitForChildActive(System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex,System.Int32,System.Int32)">
+            <summary>
+            条件で指定された子ウィンドウがアクティブになるまで待機します。
+            タイムアウトした場合nullを返します。
+            </summary>
+            <param name="rClass"      >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"       >ウィンドウテキスト（正規表現）</param>
+            <param name="iSameNum"    >ウィンドウクラス名・ウィンドウテキストがマッチする子Windowの中で何番目のWindowか</param>
+            <param name="iMiliSeconds">待機する最大秒数</param>
+            <returns>条件に合致した子Window</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.WaitForTopChildActive(System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            条件で指定された子ウィンドウがアクティブになるまで待機します。
+            タイムアウトした場合nullを返します。
+            </summary>
+            <param name="sProcessName">プロセス名</param>
+            <param name="sClass"      >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"       >ウィンドウテキスト（nullですべてに一致）</param>
+            <param name="iSameNum"    >ウィンドウクラス名・ウィンドウテキストが同一の子Windowの中で何番目のWindowか</param>
+            <param name="iMiliSeconds">待機する最大秒数</param>
+            <returns>条件に合致した子Window</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.WaitForTopChildActive(System.String,System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex,System.Int32,System.Int32)">
+            <summary>
+            条件で指定された子ウィンドウがアクティブになるまで待機します。
+            タイムアウトした場合nullを返します。
+            </summary>
+            <param name="sProcessName">プロセス名</param>
+            <param name="rClass"      >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"       >ウィンドウテキスト（正規表現）</param>
+            <param name="iSameNum"    >ウィンドウクラス名・ウィンドウテキストがマッチした子Windowの中で何番目のWindowか</param>
+            <param name="iMiliSeconds">待機する最大秒数</param>
+            <returns>条件に合致した子Window</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.WaitForTopChildActive(System.Int32,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            条件で指定された子ウィンドウがアクティブになるまで待機します。
+            タイムアウトした場合nullを返します。
+            </summary>
+            <param name="iProcessId"  >プロセスID</param>
+            <param name="sClass"      >ウィンドウクラス名（nullですべてに一致）</param>
+            <param name="sText"       >ウィンドウテキスト（nullですべてに一致）</param>
+            <param name="iSameNum"    >ウィンドウクラス名・ウィンドウテキストが同一の子Windowの中で何番目のWindowか</param>
+            <param name="iMiliSeconds">待機する最大秒数(ms)</param>
+            <returns>条件に合致した子Window</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.WaitForTopChildActive(System.Int32,System.Text.RegularExpressions.Regex,System.Text.RegularExpressions.Regex,System.Int32,System.Int32)">
+            <summary>
+            条件で指定された子ウィンドウがアクティブになるまで待機します。
+            タイムアウトした場合nullを返します。
+            </summary>
+            <param name="iProcessId"  >プロセスID</param>
+            <param name="rClass"      >ウィンドウクラス名（正規表現）</param>
+            <param name="rText"       >ウィンドウテキスト（正規表現）</param>
+            <param name="iSameNum"    >ウィンドウクラス名・ウィンドウテキストがマッチした子Windowの中で何番目のWindowか</param>
+            <param name="iMiliSeconds">待機する最大秒数(ms)</param>
+            <returns>条件に合致した子Window</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.WaitForActive(System.Int32)">
+            <summary>
+            Windowがアクティブになるまで待機します。
+            （VisibleでEnabledでメッセージに応答可能な状態になるまで待つ）
+            </summary>
+            <param name="iMiliSeconds">待機する最大秒数(ms)</param>
+            <returns>自Window（this)</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.WaitForInputIdle(System.Int32)">
+            <summary>
+            Windowがメッセージに応答可能な状態になるまで待機します。
+            </summary>
+            <param name="iMiliSeconds">待機する最大秒数(ms)</param>
+            <returns>成功すればtrue、失敗した場合はfalseを返します。</returns>
+        </member>
+        <member name="M:FNF.WindowController.Window.ThreadInputAttachBegin">
+            <summary>
+            対象ウィンドウのスレッドの入力処理機構にアタッチします。
+            WindowControllerでは、関数内でアタッチしたら関数内でデタッチしていますが、
+            このメソッドを使用するとアタッチしたままの状態になります。
+            必ずAttachThreadInputEndでデタッチしてください。
+            以下のメソッドを連続で呼び出す前にこのメソッドを呼ぶことで、アタッチ・デタッチを一度で済ませられます。
+            GetImageとGetImage2(カーソル取得時のみ)、KeyM、SetFocus。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.Window.ThreadInputAttachEnd">
+            <summary>
+            対象ウィンドウのスレッドの入力処理機構からデタッチします。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.Window.BlockStart">
+            <summary>
+            マウス入力・キーボード入力のブロックを開始します。
+            必ずBlockStopを呼び出してください。
+            もしも解除しわすれた場合は、CTRL+ALT+DELで解除できるようです。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.Window.BlockStart(System.String)">
+            <summary>
+            マウス入力・キーボード入力のブロックを開始します。
+            必ずBlockStopを呼び出してください。
+            もしも解除しわすれた場合は、CTRL+ALT+DELで解除できるようです。
+            </summary>
+            <param name="sMessage">ブロック中に表示しておくメッセージ。</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.BlockStart(System.String,System.Single,System.Drawing.Color,System.Drawing.Color,System.Double)">
+            <summary>
+            マウス入力・キーボード入力のブロックを開始します。
+            必ずBlockStopを呼び出してください。
+            もしも解除しわすれた場合は、CTRL+ALT+DELで解除できるようです。
+            </summary>
+            <param name="sMessage"  >ブロック中に表示しておくメッセージ。</param>
+            <param name="fFontSize" >メッセージのフォントサイズ</param>
+            <param name="cTextColor">メッセージの文字色</param>
+            <param name="cBackColor">メッセージの背景色</param>
+            <param name="dOpacity"  >メッセージの透明度（0.0～1.0)</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.BlockStop">
+            <summary>
+            マウス入力・キーボード入力のブロックを終了します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.Window.RectDraw(FNF.WindowController.Window,FNF.WindowController.PointMode,System.Int32,System.Int32)">
+            <summary>
+            Windowのクライアント領域をあらわす外枠を表示します。
+            また、枠内の点も表示します。枠内の点をマウスで移動した際にはRectPointMovedEventが発生します。
+            </summary>
+            <param name="wTarget">対象Window</param>
+            <param name="pmMode" >枠内の点の座標形式</param>
+            <param name="iX"     >枠内の点の座標（横方向）</param>
+            <param name="iY"     >枠内の点の座標（縦方向）</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.RectDraw(FNF.WindowController.Window)">
+            <summary>
+            Windowのクライアント領域をあらわす外枠を表示します。
+            同時に表示できる外枠は一つだけです。（前のWindowの外枠は自動的に消えます）
+            デフォルトでは、実ウィンドウが移動してもこちらは移動しません。
+            RectDrawAutoUpdateBeginを呼ぶと自動更新が始まります。
+            外枠を非表示にしたい場合、nullを指定して下さい。
+            </summary>
+            <param name="wTarget">対象Window(nullで非表示)</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.RectDrawAutoUpdateBegin(System.Int32)">
+            <summary>
+            RectDrawで表示した枠の自動更新を開始します。
+            RectDrawの対象ウィンドウの位置・大きさが変化すると、枠も自動的に更新されます。
+            Visible,Enabledは反映されません。。
+            </summary>
+            <param name="iInterval">監視する間隔</param>
+        </member>
+        <member name="M:FNF.WindowController.Window.RectDrawAutoUpdateEnd">
+            <summary>
+            RectDrawで表示した枠の自動更新を終了します。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.Text">
+            <summary>
+            ウィンドウテキスト。
+            1024バイト以上の場合は先頭の1024バイトのみを取得します。
+            エディットボックスなどのテキストを取得・設定するには、GetText/SetText関数を利用して下さい。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.Style">
+            <summary>
+            ウィンドウスタイル。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.StyleEx">
+            <summary>
+            ウィンドウスタイルＥＸ。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.Rect">
+            <summary>
+            ウィンドウの領域。
+            親Window内でこのWindowが占有する領域です。ディスプレイ上の領域ではありません。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.Menu">
+            <summary>
+            ウィンドウのメニュー。
+            このWindowがメニューを持つ場合にだけ利用可能です。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.CtrlComboBox">
+            <summary>
+            コンボボックス。
+            このWindowがComboBoxコントロールの場合にだけ利用可能です。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.CtrlListBox">
+            <summary>
+            リストボックス。
+            このWindowがListBoxコントロールの場合にだけ利用可能です。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.CtrlListView">
+            <summary>
+            リストビュー。
+            このWindowがListViewコントロールの場合にだけ利用可能です。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.CtrlTreeView">
+            <summary>
+            ツリービュー。
+            このWindowがTreeViewコントロールの場合にだけ利用可能です。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.CtrlTab">
+            <summary>
+            タブ。
+            このWindowがTabコントロールの場合にだけ利用可能です。
+            </summary>
+        </member>
+        <member name="P:FNF.WindowController.Window.CtrlButton">
+            <summary>
+            ボタン。
+            このWindowがButtonコントロールの場合にだけ利用可能です。
+            </summary>
+        </member>
+        <member name="E:FNF.WindowController.Window.RectPointMovedEvent">
+            <summary>
+            枠内の点をマウスで移動した後に発生するイベント。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.Window.RectPointMovedEventHandler">
+            <summary>
+            枠内の点をマウスで移動した後に発生するイベント用のイベントハンドラ。
+            </summary>
+            <param name="iX">移動後の点のX座標（左上基準）</param>
+            <param name="iY">移動後の点のY座標（左上基準）</param>
+        </member>
+        <member name="T:FNF.WindowController.WindowListView">
+            <summary>
+            Windowのリストビューを現します。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.WindowListViewItem">
+            <summary>
+            Windowのリストビューの項目を現します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.WindowListViewItem.Focus(System.Boolean)">
+            <summary>
+            リストビュー項目を選択(Focus)します。
+            Owner.FocusedIndexに対応します。
+            ※FocusedIndexプロパティはSendしかできませんが、こちらではPostできます。
+            ※Postの場合、相手側が落ちる可能性があります。覚悟してご利用ください。
+            </summary>
+            <param name="bPost" >メッセージ送信方法（false:SendMessage、true:PostMessage）</param>
+        </member>
+        <member name="M:FNF.WindowController.WindowListViewItem.Select(System.Boolean,System.Boolean)">
+            <summary>
+            リストビュー項目を選択(Select)します。
+            Selectedプロパティに対応します。
+            ※SelectedプロパティはSendしかできませんが、こちらではPostできます。
+            ※Postの場合、相手側が落ちる可能性があります。覚悟してご利用ください。
+            </summary>
+            <param name="bPost"  >メッセージ送信方法（false:SendMessage、true:PostMessage）</param>
+            <param name="bSelect">選択するかどうか（false:解除、true:PostMessage）</param>
+        </member>
+        <member name="M:FNF.WindowController.WindowListViewItem.SetItem(System.Int32,System.String)">
+            <summary>
+            リストビュー項目の文字列を変更します。
+            ※Itemsプロパティと対応します。
+            </summary>
+            <param name="iItemIndex">列</param>
+            <param name="sText"     >変更後の文字列</param>
+        </member>
+        <member name="T:FNF.WindowController.WindowButton">
+            <summary>
+            Windowのボタンを現します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.WindowButton.Click(System.Boolean)">
+            <summary>
+            ボタンに対してBM_CLICKメッセージを送信します。
+            </summary>
+            <param name="bPost">メッセージ送信方法（false:SendMessage、true:PostMessage）</param>
+        </member>
+        <member name="T:FNF.WindowController.WindowComboBox">
+            <summary>
+            Windowのコンボボックスを現します。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.WindowComboBoxItem">
+            <summary>
+            Windowのコンボボックスの項目を現します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.WindowComboBoxItem.Focus(System.Boolean)">
+            <summary>
+            コンボボックス項目を選択します。
+            </summary>
+            <param name="bNotify">親ウィンドウへのCBN_SELCHANGE通知の有無（true：通知する、false：通知しない）</param>
+        </member>
+        <member name="T:FNF.WindowController.WindowListBox">
+            <summary>
+            Windowのリストボックスを現します。
+            </summary>
+        </member>
+        <member name="T:FNF.WindowController.WindowListBoxItem">
+            <summary>
+            Windowのリストボックスの項目を現します。
+            </summary>
+        </member>
+        <member name="M:FNF.WindowController.WindowListBoxItem.Focus(System.Boolean,System.Boolean)">
+            <summary>
+            リストボックス項目を選択します。（単数選択形式用？）
+            うまく設定できない場合はSelectメソッドを試してください。
+            ※Owner.FocusedIndexプロパティに対応します。
+            </summary>
+            <param name="bPost" >メッセージ送信方法（false:SendMessage、true:PostMessage）</param>
+            <param name="bNotify">親ウィンドウへの通知の有無（true：通知する、false：通知しない）</param>
+        </member>
+        <member name="M:FNF.WindowController.WindowListBoxItem.Select(System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            リストボックス項目を選択します。（複数選択形式用？）
+            うまく設定できない場合はFocusメソッドを試してください。
+            ※Selectedプロパティに対応します。
+            </summary>
+            <param name="bPost" >メッセージ送信方法（false:SendMessage、true:PostMessage）</param>
+            <param name="bNotify">親ウィンドウへの通知の有無（true：通知する、false：通知しない）</param>
+            <param name="bSelect">選択するか解除するか（true：選択する、false：解除する）</param>
+        </member>
+    </members>
+</doc>
