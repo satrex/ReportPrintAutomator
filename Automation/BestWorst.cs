@@ -18,22 +18,30 @@ namespace Automation
 
         public void Output(string reportSuffix, string pictureSuffix)
         {
-            try
+            bool succeeded = false;
+            for (int i = 0; i < 3 && !succeeded; i++)
             {
-                this.Open();
-                this.Query();
-                this.PrintPreview(this.theWindow, reportSuffix);
+                try
+                {
+                    this.Open();
+                    this.Query();
+                    this.PrintPreview(this.theWindow, reportSuffix);
 
-                this.PrintImageGallery();
-                this.PrintPreview(this.galleryWindow, pictureSuffix);
+                    this.PrintImageGallery();
+                    this.PrintPreview(this.galleryWindow, pictureSuffix);
 
-                this.CloseImageGallery();
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex.StackTrace + ex.TargetSite);
-                throw ex;
+                    this.CloseImageGallery();
+                    this.Close();
+                    succeeded = true;
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.StackTrace + ex.TargetSite);
+                    if (this.theWindow != null && this.theWindow.IsExists())
+                    {
+                        theWindow.SendMessage(FNF.WindowController.API.P_WM.WM_DESTROY, IntPtr.Zero, IntPtr.Zero);
+                    }
+                }
             }
 
         }
@@ -118,7 +126,7 @@ namespace Automation
 
                     Window cutItem = Window.GetTopChild(P01.Id, "ComboLBox", "", 0);
 
-                    cutItem.MouseMove(PointMode.LeftTop, 68, 42, 1301);
+                    cutItem.MouseMove(PointMode.LeftTop, 68, 42, 301);
                     cutItem.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 68, 42); Thread.Sleep(15);
                     cutItem.MouseMove(PointMode.LeftTop, 68, 42, 50);
                     cutItem.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 68, 42);
@@ -370,6 +378,7 @@ namespace Automation
         protected override void Query()
         {
             Console.WriteLine("問い合わせ処理開始");
+            this.theWindow.WaitForActive(10000);
             this.theWindow.SetForeground();
             Window startDatePicker = theWindow.GetChild("WindowsForms10.SysDateTimePick32.app.0.378734a", "", 1);
             if (startDatePicker == null) Console.WriteLine("startDateコントロールが取れない");

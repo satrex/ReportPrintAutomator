@@ -74,22 +74,27 @@ namespace AutomationClient
             // カットソー
             bw.CriteriaSettings = new List<Action>(){bw.SetCutSawn};
             bw.Output("cutsawn", "cut_image");
+            System.Threading.Thread.Sleep(4000);
 
             // ニット
             bw.CriteriaSettings = new List<Action>(){bw.SetKnit};
             bw.Output("knit", "knit_image");
+            System.Threading.Thread.Sleep(4000);
 
             // 布帛 
             bw.CriteriaSettings = new List<Action>(){bw.SetCloth};
             bw.Output("cloth", "cloth_image");
+            System.Threading.Thread.Sleep(4000);
 
             // パンツ 
             bw.CriteriaSettings = new List<Action>(){bw.SetPants};
             bw.Output("pants", "pants_image");
+            System.Threading.Thread.Sleep(4000);
 
             // ジャケット 
             bw.CriteriaSettings = new List<Action>(){bw.SetJacket};
             bw.Output("jacket", "jacket_image");
+            System.Threading.Thread.Sleep(4000);
 
             // ワンピース 
             bw.CriteriaSettings = new List<Action>(){bw.SetOnePiece};
