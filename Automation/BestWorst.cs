@@ -12,38 +12,33 @@ namespace Automation
     /// <summary>
     /// ベストワースト分析の帳票印刷を自動化するクラスです。
     /// </summary>
-    public class BestWorst: HonbuAutomation
+    public class BestWorst : HonbuAutomation
     {
         public Window galleryWindow = null;
 
         public void Output(string reportSuffix, string pictureSuffix)
         {
-            bool succeeded = false;
-            for (int i = 0; i < 3 && !succeeded; i++)
+            try
             {
-                try
-                {
-                    this.Open();
-                    this.Query();
-                    this.PrintPreview(this.theWindow, reportSuffix);
+                this.Open();
+                this.Query();
+                this.PrintPreview(this.theWindow, reportSuffix);
 
-                    this.PrintImageGallery();
-                    this.PrintPreview(this.galleryWindow, pictureSuffix);
+                this.PrintImageGallery();
+                this.PrintPreview(this.galleryWindow, pictureSuffix);
 
-                    this.CloseImageGallery();
-                    this.Close();
-                    succeeded = true;
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine(ex.StackTrace + ex.TargetSite);
-                    if (this.theWindow != null && this.theWindow.IsExists())
-                    {
-                        theWindow.SendMessage(FNF.WindowController.API.P_WM.WM_DESTROY, IntPtr.Zero, IntPtr.Zero);
-                    }
-                }
+                this.CloseImageGallery();
+                this.Close();
             }
-
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.StackTrace + ex.TargetSite);
+                if (this.theWindow != null && this.theWindow.IsExists())
+                {
+                    theWindow.SendMessage(FNF.WindowController.API.P_WM.WM_DESTROY, IntPtr.Zero, IntPtr.Zero);
+                }
+                throw ex;
+            }
         }
         /// <summary>
         /// 画面を開きます。
@@ -115,6 +110,7 @@ namespace Automation
                     largeCategory.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 14, 9); Thread.Sleep(41);
 
                     Window topsItem = Window.GetTopChild(P01.Id, "ComboLBox", "", 0);
+                    for (int i = 0; topsItem == null && i < 3; i++ ) Thread.Sleep(2000);
 
                     topsItem.MouseMove(PointMode.LeftTop, 29, 34, 76);
                     topsItem.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 29, 34); Thread.Sleep(16);
@@ -227,6 +223,53 @@ namespace Automation
                 };
             }
         }
+        
+        /// <summary>
+        /// 大分類：ボトムス、中分類：スカートを選択します。
+        /// </summary>
+        public Action SetSkirt
+        {
+            get
+            {
+                return () =>
+                {
+                    Window.BreakKey = KBtn.ESCAPE;
+                    Console.WriteLine("スカート選択開始");
+
+                    Process P01 = theProcess;
+
+                    Window largeCategory = this.theWindow.GetChild("WindowsForms10.COMBOBOX.app.0.378734a", "", 4);
+
+                    largeCategory.MouseMove(PointMode.LeftTop, 34, 9, 1092);
+                    largeCategory.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 34, 9); Thread.Sleep(141);
+                    largeCategory.MouseMove(PointMode.LeftTop, 34, 9);
+                    largeCategory.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 34, 9); Thread.Sleep(483);
+
+                    Window bottomsItem = Window.GetTopChild(P01.Id, "ComboLBox", "", 0);
+
+                    bottomsItem.MouseMove(PointMode.LeftTop, 51, 50, 1061);
+                    bottomsItem.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 51, 50); Thread.Sleep(140);
+                    bottomsItem.MouseMove(PointMode.LeftTop, 51, 50);
+                    bottomsItem.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 51, 50); Thread.Sleep(344);
+
+                    Window midCategory = this.theWindow.GetChild("WindowsForms10.COMBOBOX.app.0.378734a", "", 3);
+
+                    midCategory.MouseMove(PointMode.LeftTop, 52, 12, 826);
+                    midCategory.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 52, 12); Thread.Sleep(156);
+                    midCategory.MouseMove(PointMode.LeftTop, 52, 12);
+                    midCategory.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 52, 12); Thread.Sleep(687);
+
+                    Window skirtItem = Window.GetTopChild(P01.Id, "ComboLBox", "", 0);
+
+                    skirtItem.MouseMove(PointMode.LeftTop, 31, 20, 686);
+                    skirtItem.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 31, 20); Thread.Sleep(125);
+                    skirtItem.MouseMove(PointMode.LeftTop, 31, 20);
+                    skirtItem.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 31, 20);
+                    Console.WriteLine("スカート選択完了");
+                };
+            }
+        }
+
 
         /// <summary>
         /// 大分類：ボトムス、中分類：パンツを選択します。
@@ -429,7 +472,7 @@ namespace Automation
             Window printPreviewButton = window.GetChild("WindowsForms10.BUTTON.app.0.378734a", "印刷");
 
             printPreviewButton.MouseMove(PointMode.LeftTop, 55, 18, 340);
-            printPreviewButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 55, 18); Thread.Sleep(4774);
+            printPreviewButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 55, 18);                       Thread.Sleep(4774);
 
             this.SaveFile(saveFileName);
             this.PrintOut();
@@ -448,8 +491,25 @@ namespace Automation
 
             this.WaitForActive();
             Window previewWindow = Window.GetTopChild(P01.Id, new Regex(@"WindowsForms10\.Window\.8\.app\.0\.378734a"), new Regex("売上ベスト・ワースト分析.*印刷プレビュー画面"));
-            if (previewWindow == null) return;
-            Window printButton = previewWindow.GetChild("WindowsForms10.Window.8.app.0.378734a", "").GetChild("WindowsForms10.Window.8.app.0.378734a", "", 2);
+            for (int i = 0; previewWindow == null && i < 5; i++)
+            {
+                Thread.Sleep(2000);
+                previewWindow = Window.GetTopChild(P01.Id, new Regex(@"WindowsForms10\.Window\.8\.app\.0\.378734a"), new Regex("売上ベスト・ワースト分析.*印刷プレビュー画面"));
+            }
+
+            Window menu = previewWindow.GetChild("WindowsForms10.Window.8.app.0.378734a", "");
+            for (int i = 0; menu == null && i < 5; i++)
+            {
+                Thread.Sleep(2000);
+                menu = previewWindow.GetChild("WindowsForms10.Window.8.app.0.378734a", "");
+            }
+
+            Window printButton = menu.GetChild("WindowsForms10.Window.8.app.0.378734a", "", 2);
+            for (int i = 0; printButton == null && i < 5; i++)
+            {
+                Thread.Sleep(1000);
+                printButton = menu.GetChild("WindowsForms10.Window.8.app.0.378734a", "", 2);
+            }
             printButton.WaitForActive(5000);
             printButton.MouseMove(PointMode.LeftTop, 60, 18, 104);
             printButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 60, 18);
@@ -473,28 +533,42 @@ namespace Automation
 
             Window pdfButton = previewWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "PDF出力");
             pdfButton.WaitForActive(5000);
-            pdfButton.MouseMove(PointMode.LeftTop, 40, 31, 407);
-            pdfButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 40, 31);
+            pdfButton.PushKey(KBtn.RETURN);
+            //pdfButton.MouseMove(PointMode.LeftTop, 40, 31, 407);
+            //pdfButton.MouseE(MType.Down, MBtn.L, PointMode.LeftTop, 40, 31);
+            //pdfButton.MouseE(MType.Up, MBtn.L, PointMode.LeftTop, 40, 31);
             Console.WriteLine("PDF出力ボタンを押したよ");
             Thread.Sleep(1560);
 
             Window saveDialog = Window.GetTopChild(P01.Id, "#32770", "保存先を指定してください");
-            Console.WriteLine("saveDialogが" + saveDialog == null? "取れてないよ" : "取れたよ") ;
+            Console.Write("saveDialogが");
+            for (int i = 0; saveDialog == null && i < 30; i++)
+            {
+                Console.WriteLine("取れてないよ" ) ;
+                saveDialog = Window.GetTopChild(P01.Id, "#32770", "保存先を指定してください");
+            }
+            Console.WriteLine("取れたよ") ;
 
-            Window saveButton = saveDialog.GetChild("Button", "保存(&S)");
-            Console.WriteLine("saveButtonが" + saveButton == null? "取れてないよ" : "取れたよ") ;
-
-            Window fileNameText;
+            Window fileNameText = null;
             try
             {
-                fileNameText = saveDialog.GetChild("DUIViewWndClassName", "").GetChild("DirectUIHWND", "").GetChild("FloatNotifySink", "", 0).GetChild("ComboBox", "").GetChild("Edit", "");
+                for (int i = 0; fileNameText == null && i < 5; i++)
+                {
+                    fileNameText = saveDialog.GetChild("DUIViewWndClassName", "").GetChild("DirectUIHWND", "").GetChild("FloatNotifySink", "", 0).GetChild("ComboBox", "").GetChild("Edit", "");
+                    Thread.Sleep(1000);
+                }
             }
             catch
             {
-                fileNameText = saveDialog.GetChild("ComboBoxEx32", "").GetChild("ComboBox", "")
-                    .GetChild("Edit", "");
+                for (int j = 0; fileNameText == null && j < 5; j++)
+                {
+                    fileNameText = saveDialog.GetChild("ComboBoxEx32", "").GetChild("ComboBox", "")
+                        .GetChild("Edit", "");
+                    Thread.Sleep(1000);
+                }
             }
-            Console.WriteLine("fileNameTextが" + fileNameText == null? "取れてないよ" : "取れたよ") ;
+            Console.Write("fileNameTextが");
+            Console.WriteLine(fileNameText == null? "取れてないよ" : "取れたよ") ;
 
             fileNameText.MouseMove(PointMode.LeftTop, 510, 9, 188);
             fileNameText.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 510, 9); Thread.Sleep(125);
@@ -502,9 +576,19 @@ namespace Automation
             fileNameText.KeyE(KType.Click, KBtn.BACK, KBtn.BACK, KBtn.BACK, KBtn.BACK); Thread.Sleep(87);
             fileNameText.KeyE(KType.Click, KBtn.BACK, KBtn.BACK); Thread.Sleep(197);
             fileNameText.InputText(fileName);
+            fileNameText.PushKey(KBtn.RETURN);
 
-            saveButton.MouseMove(PointMode.LeftTop, 31, 11, 546);
-            saveButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 31, 11);
+            //Window saveButton = saveDialog.GetChild("Button", "保存(&S)");
+            //Console.Write("saveButtonが");
+            //for (int i = 0; saveButton == null && i < 3; i++)
+            //{
+            //    Console.WriteLine("取れてないよ" ) ;
+            //    saveButton = saveDialog.GetChild("Button", "保存(&S)");
+            //}
+            //Console.WriteLine("取れたよ") ;
+
+            //saveButton.MouseMove(PointMode.LeftTop, 31, 11, 546);
+            //saveButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 31, 11);
             AnswerDialogOK();
             Console.WriteLine("保存ボタン押下完了");
         }
@@ -519,7 +603,7 @@ namespace Automation
                 Process P01 = theProcess;
 
                 Window printDialog = Window.GetTopChild(P01.Id, "#32770", "印刷");
-                while (printDialog == null)
+                for (int i = 0; printDialog == null && i < 5; i++ )
                 {
                     Thread.Sleep(1000);
                     printDialog = Window.GetTopChild(P01.Id, "#32770", "印刷");
@@ -543,7 +627,20 @@ namespace Automation
            Process P01 = theProcess;
 
            Window dialog = Window.GetTopChild(P01.Id, "#32770", "PDF出力");
+           for (int i = 0; dialog == null && i < 5; i++)
+           {
+               Thread.Sleep(1000);
+               dialog = Window.GetTopChild(P01.Id, "#32770", "PDF出力");
+           }
+           dialog.PushKey(KBtn.RETURN);
+           return;
+
            Window okButton = dialog.GetChild("Button", "OK");
+           for (int i = 0; okButton == null && i < 5; i++)
+           {
+               Thread.Sleep(1000);
+               okButton = dialog.GetChild("Button", "OK");
+           }
            //int i = 0;
            //while (i < 5)
            //{
@@ -584,7 +681,7 @@ namespace Automation
            Window imageButton = this.theWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "画像一覧");
 
            imageButton.MouseMove(PointMode.LeftTop, 57, 21, 591);
-           imageButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 57, 21); Thread.Sleep(1691);
+           imageButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 57, 21); Thread.Sleep(6691);
 
            this.galleryWindow = Window.GetTopChild(P01.Id, "WindowsForms10.Window.8.app.0.378734a", "売上ベスト・ワースト分析  画像一覧");
            Window printButton = this.galleryWindow.GetChild("WindowsForms10.BUTTON.app.0.378734a", "印刷");
@@ -639,8 +736,14 @@ namespace Automation
             this.WaitForActive();
             this.theWindow.SetFocus();
             closeButton.MouseE(MType.Click, MBtn.L, PointMode.LeftTop, 27, 20);
+            Thread.Sleep(1500);
 
             Window confirm = Window.GetTopChild(P01.Id, "#32770", "確認");
+            for (int i = 0; confirm == null && i < 5; i++ )
+            {
+                Thread.Sleep(2000);
+                confirm = Window.GetTopChild(P01.Id, "#32770", "確認");
+            }
             confirm.SetForeground();
             Window yesButton = confirm.GetChild("Button", "はい(&Y)");
 
