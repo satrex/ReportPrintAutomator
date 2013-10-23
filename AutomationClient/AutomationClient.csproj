@@ -68,8 +68,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir $(ProjectDir)$(ProjectName)
-copy $(TargetDir)*  \\landisk\disk1\システム\内製品\$(ProjectName)
+    <PostBuildEvent>copy $(TargetDir)*  \\landisk\disk1\システム\内製品\$(ProjectName)
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

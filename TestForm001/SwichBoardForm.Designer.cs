@@ -108,6 +108,7 @@
             this.bwOnePieceButton.TabIndex = 7;
             this.bwOnePieceButton.Text = "ワンピース";
             this.bwOnePieceButton.UseVisualStyleBackColor = true;
+            this.bwOnePieceButton.Click += new System.EventHandler(this.bwOnePieceButton_Click);
             // 
             // bwJacketButton
             // 

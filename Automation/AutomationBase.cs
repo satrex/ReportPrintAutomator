@@ -35,6 +35,20 @@ namespace Automation
                 Trace.Listeners.Add(this.Listener);
         }
 
+        protected Window ContinuousGet(Func<Window> getterMethod)
+        {
+            Window target = null;
+            for (int i = 0; i < 120; i++)
+            {
+                target = getterMethod.Invoke();
+                Thread.Sleep(1000);
+                if (target != null)
+                    return target;
+            }
+
+            throw new ApplicationException(string.Format(@"{0}を待ちましたが、アクティブになりませんでした。", target.Text));
+        }
+
         internal void AnswerDialogOK()
         {
             try
@@ -60,7 +74,26 @@ namespace Automation
 
         }
 
- 
+        /// <summary>
+        /// ウィンドウがアクティブになるまで待ち、処理を実行します。
+        /// 120秒待ってもアクティブにならなかった場合は、例外を発生させます。
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="action"></param>
+        protected void DoWhenActive(Window target, Action action)
+        {
+            for (int i = 0; i < 120; i++)
+            {
+                if (target == null || target.WaitForActive(1000) == null)
+                    continue;
+
+                if(action != null)
+                    action.Invoke();
+                return;
+            }
+            throw new ApplicationException(@"{0}を待ちましたが、アクティブになりませんでした。");
+        }
+
         public abstract void Open();
         public abstract void Close();
         public List<KBtn> numKeys =

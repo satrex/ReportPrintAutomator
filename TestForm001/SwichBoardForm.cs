@@ -199,9 +199,9 @@ namespace ReportPrintAutomator
         {
             Automation.BestWorst bw = this.GetBestWorst();
 
-            // ワンピース 
-            bw.CriteriaSettings = new List<Action>() { bw.SetOnePiece };
-            bw.Output("onepiece", "onepiece_image");
+            // ジャケット
+            bw.CriteriaSettings = new List<Action>() { bw.SetJacket};
+            bw.Output("jacket", "jacket_image");
         }
 
         private void sdLargeButton_Click(object sender, EventArgs e)
@@ -253,6 +253,16 @@ namespace ReportPrintAutomator
         private void closeButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void bwOnePieceButton_Click(object sender, EventArgs e)
+        {
+            Automation.BestWorst bw = this.GetBestWorst();
+
+            // ワンピース 
+            bw.CriteriaSettings = new List<Action>() { bw.SetOnePiece };
+            bw.Output("onepiece", "onepiece_image");
+
         }
     }
 }
